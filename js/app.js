@@ -106,7 +106,8 @@ function createGameBoardLogic() {
             } else if (j == gameboard_size - 1) {
                 // right
                 if (i == 0) {
-                    // pass
+                    const square_right_edge = gameboard_data[gameboard_ids[i][j-1]].right;
+                    gameboard_data[id].connectLeft(square_right_edge);
                 } else if (i == gameboard_size - 1) {// bottom
                     // connect top 
                     const square_top_edge = gameboard_data[gameboard_ids[i - 1][j]].bottom;
@@ -130,7 +131,8 @@ function createGameBoardLogic() {
                 }
             } else {
                 if (i == 0) {
-                    // pass
+                    const square_right_edge = gameboard_data[gameboard_ids[i][j-1]].right;
+                    gameboard_data[id].connectLeft(square_right_edge);
                 } else if (i == gameboard_size - 1) {// bottom
                     // connect top 
                     const square_top_edge = gameboard_data[gameboard_ids[i - 1][j]].bottom;
@@ -174,34 +176,49 @@ function createGameBoardLogic() {
 
 // Function to change the content of t2
 
+function updateData(){
+
+}
+
 function addEdge() {
     const btn_name = this.getAttribute("name");
-    const parent = this.parentElement.style;
+    const parent = this.parentElement;
 
+    let id = -1
     let border_style = `solid 5px ${turn_color}`;
 
     switch (btn_name) {
         case "btn-top":
-            parent.borderTop = border_style;
-            parent.marginTop = "0";
+            parent.style.borderTop = border_style;
+            parent.style.marginTop = "0";
+            id = parent.getAttribute("id");
+            gameboard_data[id].top.setPopulated();
             switchTurns();
             break;
         case "btn-bottom":
-            parent.borderBottom = border_style;
-            parent.marginBottom = "0";
+            parent.style.borderBottom = border_style;
+            parent.style.marginBottom = "0";
+            id = parent.getAttribute("id");
+            gameboard_data[id].bottom.setPopulated();
             switchTurns();
             break;
         case "btn-left":
-            parent.borderLeft = border_style;
-            parent.marginLeft = "0";
+            parent.style.borderLeft = border_style;
+            parent.style.marginLeft = "0";
+            id = parent.getAttribute("id");
+            gameboard_data[id].left.setPopulated();
             switchTurns();
             break;
         case "btn-right":
-            parent.borderRight = border_style;
-            parent.marginRight = "0";
+            parent.style.borderRight = border_style;
+            parent.style.marginRight = "0";
+            id = parent.getAttribute("id");
+            gameboard_data[id].right.setPopulated();
             switchTurns();
             break;
     }
+    console.log(gameboard_data)
+
 }
 
 function onHover() {
@@ -270,7 +287,7 @@ function onMouseOut() {
     }
 }
 
-for (let i = 1; i <= 9; i++) {
+for (let i = 0; i < gameboard_size*gameboard_size; i++) {
     // Add event listener to table
     const square = document.getElementById(i).children;
     for (child of square) {
