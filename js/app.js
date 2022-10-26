@@ -125,11 +125,33 @@ function createGameBoardLogic() {
                     const square_right_edge = gameboard_data[gameboard_ids[i][j-1]].right;
                     gameboard_data[id].connectLeft(square_right_edge); 
 
-                    gameboard_data[id].left.setPopulated();
-                    console.log(gameboard_data);
+                    // gameboard_data[id].left.setPopulated();
+                    // console.log(gameboard_data);
                 }
             } else {
-                
+                if (i == 0) {
+                    // pass
+                } else if (i == gameboard_size - 1) {// bottom
+                    // connect top 
+                    const square_top_edge = gameboard_data[gameboard_ids[i - 1][j]].bottom;
+                    gameboard_data[id].connectTop(square_top_edge); //connect top
+                    // gameboard_data[id].top.setPopulated();
+                    // console.log(gameboard_data);
+
+                    const square_right_edge = gameboard_data[gameboard_ids[i][j-1]].right;
+                    gameboard_data[id].connectLeft(square_right_edge);
+                } else {// mid
+                    // connect top, don't need to connect bottom because the next will connect their top which is our bottom
+                    const square_top_edge = gameboard_data[gameboard_ids[i - 1][j]].bottom;
+                    gameboard_data[id].connectTop(square_top_edge); 
+
+                    const prev_id = gameboard_ids[i][j-1];
+                    const square_right_edge = gameboard_data[gameboard_ids[i][j-1]].right;
+                    gameboard_data[id].connectLeft(square_right_edge); 
+
+                    // gameboard_data[id].left.setPopulated();
+                    // console.log(gameboard_data);
+                }
             }
 
             id += 1;
