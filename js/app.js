@@ -3,6 +3,8 @@ const gameboard_el = document.querySelector(".gameboard");
 const player_colors = ["blue", "red", "lime"];
 const players = 2;
 
+let player_scores = [0, 0, 0];
+
 let turn = 0;
 let turn_color = player_colors[turn];
 
@@ -175,8 +177,50 @@ function createGameBoardLogic() {
 // console.log(gameboard);
 
 // Function to change the content of t2
+function getCoordinates(id){
+    for (let i = 0; i < gameboard_size; i++){
+        for (let j = 0; j < gameboard_size; j++){
+            if (gameboard_ids[i][j] == id)
+                return {i_index: i, j_index: j};
+        }
+    }
+}
 
-function updateData(){
+
+function checkPoint(edge, id){
+    const {i_index, j_index} = getCoordinates(id);
+    if (edge == "right"){
+        if (j_index == 0){
+            
+
+        } else if (j_index == gameboard_size-1){
+
+        }else{
+            if (i_index == 0){
+                let target_id = gameboard_ids[i_index][j_index];
+                let square = gameboard_data[target_id];
+                if (square.checkStatus()){
+                    player_scores[turn] += 1;
+                    console.log(player_scores);
+                }
+
+                // Check box on the right
+                target_id = gameboard_ids[i_index][j_index+1];
+                square = gameboard_data[target_id];
+                if (square.checkStatus()){
+                    player_scores[turn] += 1;
+                    console.log(player_scores);
+                }
+
+            }
+        }
+
+
+
+        console.log("test")
+    } else if (edge == "left"){
+
+    }
 
 }
 
@@ -193,6 +237,7 @@ function addEdge() {
             parent.style.marginTop = "0";
             id = parent.getAttribute("id");
             gameboard_data[id].top.setPopulated();
+            checkPoint();
             switchTurns();
             break;
         case "btn-bottom":
@@ -200,6 +245,7 @@ function addEdge() {
             parent.style.marginBottom = "0";
             id = parent.getAttribute("id");
             gameboard_data[id].bottom.setPopulated();
+            checkPoint();
             switchTurns();
             break;
         case "btn-left":
@@ -207,6 +253,7 @@ function addEdge() {
             parent.style.marginLeft = "0";
             id = parent.getAttribute("id");
             gameboard_data[id].left.setPopulated();
+            checkPoint();
             switchTurns();
             break;
         case "btn-right":
@@ -214,6 +261,7 @@ function addEdge() {
             parent.style.marginRight = "0";
             id = parent.getAttribute("id");
             gameboard_data[id].right.setPopulated();
+            checkPoint("right", id);
             switchTurns();
             break;
     }
