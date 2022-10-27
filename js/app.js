@@ -22,6 +22,7 @@ function switchTurns() {
     turn += 1;
     if (turn >= players) turn = 0;
     turn_color = player_colors[turn];
+    console.log(turn_color);
 }
 
 class EdgeData {
@@ -61,6 +62,31 @@ class SquareData {
     checkStatus() {
         if (this.top.populated && this.bottom.populated && this.left.populated && this.right.populated) return true;
         else return false;
+    }
+
+    isPopulated(side){
+        if (side == "left"){
+            return this.left.populated
+        } else if (side == "right"){
+            return this.right.populated
+        } else if (side == "top"){
+            return this.top.populated
+        } else if (side == "bottom"){
+            return this.bottom.populated
+        }
+        return false;
+    }
+
+    setPopulated(side){
+        if (side == "left"){
+            this.left.setPopulated()
+        } else if (side == "right"){
+            this.right.setPopulated()
+        } else if (side == "top"){
+            this.top.setPopulated()
+        } else if (side == "bottom"){
+            this.bottom.setPopulated()
+        }
     }
 }
 
@@ -224,79 +250,123 @@ function checkPoint(edge, id){
 
 }
 
+function getSide(btn_name){
+    switch (btn_name) {
+        case "btn-top":
+            return "top";
+        case "btn-bottom":
+            return "bottom";
+        case "btn-left":
+            return "left";
+        case "btn-right":
+            return "right";
+    }
+}
+
+function updateBorderAndMargin(element, side, border_style, margin_style){
+    switch (side) {
+        case "top":
+            element.style.borderTop = border_style;
+            element.style.marginTop = "0";
+            return;
+        case "bottom":
+            element.style.borderBottom = border_style;
+            element.style.marginBottom = "0";
+            return;
+        case "left":
+            element.style.borderLeft = border_style;
+            element.style.marginLeft = "0";
+            return;
+        case "right":
+            element.style.borderRight = border_style;
+            element.style.marginRight = "0";
+            return;
+    }
+}
+
+
 function addEdge() {
     const btn_name = this.getAttribute("name");
     const parent = this.parentElement;
+    square_id = parent.getAttribute("id");
 
     let id = -1
     let border_style = `solid 5px ${turn_color}`;
 
-    switch (btn_name) {
-        case "btn-top":
-            parent.style.borderTop = border_style;
-            parent.style.marginTop = "0";
-            id = parent.getAttribute("id");
-            gameboard_data[id].top.setPopulated();
-            checkPoint();
-            switchTurns();
-            break;
-        case "btn-bottom":
-            parent.style.borderBottom = border_style;
-            parent.style.marginBottom = "0";
-            id = parent.getAttribute("id");
-            gameboard_data[id].bottom.setPopulated();
-            checkPoint();
-            switchTurns();
-            break;
-        case "btn-left":
-            parent.style.borderLeft = border_style;
-            parent.style.marginLeft = "0";
-            id = parent.getAttribute("id");
-            gameboard_data[id].left.setPopulated();
-            checkPoint();
-            switchTurns();
-            break;
-        case "btn-right":
-            parent.style.borderRight = border_style;
-            parent.style.marginRight = "0";
-            id = parent.getAttribute("id");
-            gameboard_data[id].right.setPopulated();
-            checkPoint("right", id);
-            switchTurns();
-            break;
-    }
+    const side = getSide(btn_name);
+    updateBorderAndMargin(parent, side, border_style);
+    gameboard_data[square_id].setPopulated(side);
+    checkPoint();
+    switchTurns();
+
+    // switch (btn_name) {
+    //     case "btn-top":
+    //         parent.style.borderTop = border_style;
+    //         parent.style.marginTop = "0";
+    //         id = parent.getAttribute("id");
+    //         gameboard_data[id].top.setPopulated();
+    //         checkPoint();
+    //         switchTurns();
+    //         break;
+    //     case "btn-bottom":
+    //         parent.style.borderBottom = border_style;
+    //         parent.style.marginBottom = "0";
+    //         id = parent.getAttribute("id");
+    //         gameboard_data[id].bottom.setPopulated();
+    //         checkPoint();
+    //         switchTurns();
+    //         break;
+    //     case "btn-left":
+    //         parent.style.borderLeft = border_style;
+    //         parent.style.marginLeft = "0";
+    //         id = parent.getAttribute("id");
+    //         gameboard_data[id].left.setPopulated();
+    //         checkPoint();
+    //         switchTurns();
+    //         break;
+    //     case "btn-right":
+    //         parent.style.borderRight = border_style;
+    //         parent.style.marginRight = "0";
+    //         id = parent.getAttribute("id");
+    //         gameboard_data[id].right.setPopulated();
+    //         checkPoint("right", id);
+    //         switchTurns();
+    //         break;
+    // }
     console.log(gameboard_data)
 
 }
 
 function onHover() {
     const btn_name = this.getAttribute("name");
-    const parent = this.parentElement.style;
+    const parent = this.parentElement;
+    const id = parent.getAttribute("id");
+    
     const player_1_color = "blue";
 
     switch (btn_name) {
         case "btn-top":
-            if (parent.outlineTopColor != player_1_color) {
-                parent.borderTop = "dashed 5px black";
-                parent.marginTop = "0";
+            if (!gameboard_data[id].isPopulated("top")) {
+                parent.style.borderTop = "dashed 5px black";
+                parent.style.marginTop = "0";
             }
             break;
         case "btn-bottom":
-            if (parent.borderBottomColor != player_1_color) {
-                parent.borderBottom = "dashed 5px black";
-                parent.marginBottom = "0";
+            if (!gameboard_data[id].isPopulated("bottom")) {
+                parent.style.borderBottom = "dashed 5px black";
+                parent.style.marginBottom = "0";
             }
             break;
         case "btn-left":
-            if (parent.borderLeftColor != player_1_color) {
-                parent.borderLeft = "dashed 5px black";
-                parent.marginLeft = "0";
+            if (!gameboard_data[id].isPopulated("left")) {
+                parent.style.borderLeft = "dashed 5px black";
+                parent.style.marginLeft = "0";
             }
             break;
         case "btn-right":
-            if (parent.borderRightColor != player_1_color) {
-                parent.borderRight = "dashed 5px black";
-                parent.marginRight = "0";
+            if (!gameboard_data[id].isPopulated("right")) {
+                parent.style.borderRight = "dashed 5px black";
+                parent.style.marginRight = "0";
             }
             break;
     }
