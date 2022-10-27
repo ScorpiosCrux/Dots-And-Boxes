@@ -212,40 +212,74 @@ function getCoordinates(id){
     }
 }
 
+function checkAndPoint(target_id){
+    const square = gameboard_data[target_id];
+    if (square.checkStatus()){
+        player_scores[turn] += 1;
+        console.log(player_scores);
+    }
+}
+
 
 function checkPoint(edge, id){
     const {i_index, j_index} = getCoordinates(id);
+
+    const right = {i: i_index, j: j_index+1};
+    const left = {i: i_index, j: j_index-1};
+
+    const current = {i: i_index, j: j_index};
+
+    const top = {i: i_index-1, j: j_index};
+    const bottom = {i: i_index+1, j: j_index};
+
+    const checks = []
+
+
     if (edge == "right"){
         if (j_index == 0){
-            
-
+            checks.push(current);
+            checks.push(right);
         } else if (j_index == gameboard_size-1){
-
-        }else{
-            if (i_index == 0){
-                let target_id = gameboard_ids[i_index][j_index];
-                let square = gameboard_data[target_id];
-                if (square.checkStatus()){
-                    player_scores[turn] += 1;
-                    console.log(player_scores);
-                }
-
-                // Check box on the right
-                target_id = gameboard_ids[i_index][j_index+1];
-                square = gameboard_data[target_id];
-                if (square.checkStatus()){
-                    player_scores[turn] += 1;
-                    console.log(player_scores);
-                }
-
-            }
+            checks.push(current);
+        }else{ // mid
+            checks.push(current);
+            checks.push(right);
         }
-
-
-
-        console.log("test")
     } else if (edge == "left"){
+        if (j_index == 0){
+            checks.push(current);
+        } else if (j_index == gameboard_size-1){
+            checks.push(current);
+            checks.push(left);
+        }else{ // mid
+            checks.push(current);
+            checks.push(left);
+        }
+    } else if (edge == "bottom"){
+        if (i_index == 0){
+            checks.push(current);
+            checks.push(bottom);
+        } else if (i_index == gameboard_size-1){
+            checks.push(current);
+        }else{ // mid
+            checks.push(current);
+            checks.push(bottom);
+        }
+    } else if (edge == "top"){
+        if (i_index == 0){
+            checks.push(current);
+        } else if (i_index == gameboard_size-1){
+            checks.push(top);
+            checks.push(current);
+        }else{ // mid
+            checks.push(top);
+            checks.push(current);
+        }
+    }
 
+    for (let check of checks){
+        let target_id = gameboard_ids[check.i][check.j]
+        checkAndPoint(target_id)
     }
 
 }
@@ -286,55 +320,18 @@ function updateBorderAndMargin(element, side, border_style, margin_style){
 
 
 function addEdge() {
-    const btn_name = this.getAttribute("name");
-    const parent = this.parentElement;
-    square_id = parent.getAttribute("id");
-
-    let id = -1
     let border_style = `solid 5px ${turn_color}`;
 
+    const btn_name = this.getAttribute("name");
+    const parent = this.parentElement;
+    const square_id = parent.getAttribute("id");
     const side = getSide(btn_name);
+
     updateBorderAndMargin(parent, side, border_style);
     gameboard_data[square_id].setPopulated(side);
-    checkPoint();
+    checkPoint(side, square_id);
     switchTurns();
-
-    // switch (btn_name) {
-    //     case "btn-top":
-    //         parent.style.borderTop = border_style;
-    //         parent.style.marginTop = "0";
-    //         id = parent.getAttribute("id");
-    //         gameboard_data[id].top.setPopulated();
-    //         checkPoint();
-    //         switchTurns();
-    //         break;
-    //     case "btn-bottom":
-    //         parent.style.borderBottom = border_style;
-    //         parent.style.marginBottom = "0";
-    //         id = parent.getAttribute("id");
-    //         gameboard_data[id].bottom.setPopulated();
-    //         checkPoint();
-    //         switchTurns();
-    //         break;
-    //     case "btn-left":
-    //         parent.style.borderLeft = border_style;
-    //         parent.style.marginLeft = "0";
-    //         id = parent.getAttribute("id");
-    //         gameboard_data[id].left.setPopulated();
-    //         checkPoint();
-    //         switchTurns();
-    //         break;
-    //     case "btn-right":
-    //         parent.style.borderRight = border_style;
-    //         parent.style.marginRight = "0";
-    //         id = parent.getAttribute("id");
-    //         gameboard_data[id].right.setPopulated();
-    //         checkPoint("right", id);
-    //         switchTurns();
-    //         break;
-    // }
     console.log(gameboard_data)
-
 }
 
 function onHover() {
