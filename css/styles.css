@@ -4,13 +4,39 @@ body {
     font-family: "Comic Sans MS, Comic Sans", monospace;
 }
 
+.navbar {
+    display: flex;
+    height: 5vh;
+    justify-content: center;
+    align-items: center;
+}
+
+.navbar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.navbar ul li {
+    display: inline-block;
+    padding: 10px 20px;
+}
+
+.navbar a {
+    display: inline;
+    font-size: large;
+    text-decoration: none;
+    text-transform: capitalize;
+}
+
 main {
     height: 92vh;
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: start;
 }
 
 .title {

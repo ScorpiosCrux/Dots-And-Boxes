@@ -330,11 +330,37 @@ function onMouseOut() {
 
 }
 
-function main() {
+function resetStyles() {
+    const squares = document.getElementsByClassName("square");
+    for (let square of squares){
+        square.style.border = "none";
+        square.style.margin = "5px";
+    }
+}
+
+function reset() {
+    resetStyles();
+    setup();
+}
+
+function setup(){
+    player_scores = [0, 0, 0];
+    turn = 0;
+    turn_color = player_colors[turn];
+    gameboard_ids = new Array(gameboard_size);
+    gameboard_data = {};
 
     for (var i = 0; i < gameboard_ids.length; i++) {
         gameboard_ids[i] = new Array(gameboard_size);
     }
+
+    createGameBoardLogic();
+    updateScore();
+}
+
+function start() {
+
+    setup()
 
     for (let i = 0; i < gameboard_size * gameboard_size; i++) {
         // Add event listener to table
@@ -348,7 +374,10 @@ function main() {
         }
     }
 
-    createGameBoardLogic();
+    const reset_btn = document.getElementById("reset");
+    reset_btn.addEventListener("click", reset, false)
 }
 
-main();
+
+
+start();
