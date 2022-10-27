@@ -268,19 +268,19 @@ function updateBorderAndMargin(element, side, border_style, margin_style) {
     switch (side) {
         case "top":
             element.style.borderTop = border_style;
-            element.style.marginTop = "0";
+            element.style.marginTop = margin_style;
             return;
         case "bottom":
             element.style.borderBottom = border_style;
-            element.style.marginBottom = "0";
+            element.style.marginBottom = margin_style;
             return;
         case "left":
             element.style.borderLeft = border_style;
-            element.style.marginLeft = "0";
+            element.style.marginLeft = margin_style;
             return;
         case "right":
             element.style.borderRight = border_style;
-            element.style.marginRight = "0";
+            element.style.marginRight = margin_style;
             return;
     }
 }
@@ -293,7 +293,7 @@ function addEdge() {
     const square_id = parent.getAttribute("id");
     const side = getSide(btn_name);
 
-    updateBorderAndMargin(parent, side, border_style);
+    updateBorderAndMargin(parent, side, border_style, "0");
     gameboard_data[square_id].setPopulated(side);
     checkPoint(side, square_id);
 }
@@ -302,66 +302,34 @@ function onHover() {
     const btn_name = this.getAttribute("name");
     const parent = this.parentElement;
     const id = parent.getAttribute("id");
+    const border = "dashed 5px black";
+    const side = getSide(btn_name);
 
-    switch (btn_name) {
-        case "btn-top":
-            if (!gameboard_data[id].isPopulated("top")) {
-                parent.style.borderTop = "dashed 5px black";
-                parent.style.marginTop = "0";
-            }
-            break;
-        case "btn-bottom":
-            if (!gameboard_data[id].isPopulated("bottom")) {
-                parent.style.borderBottom = "dashed 5px black";
-                parent.style.marginBottom = "0";
-            }
-            break;
-        case "btn-left":
-            if (!gameboard_data[id].isPopulated("left")) {
-                parent.style.borderLeft = "dashed 5px black";
-                parent.style.marginLeft = "0";
-            }
-            break;
-        case "btn-right":
-            if (!gameboard_data[id].isPopulated("right")) {
-                parent.style.borderRight = "dashed 5px black";
-                parent.style.marginRight = "0";
-            }
-            break;
-    }
+    if (!gameboard_data[id].isPopulated(side)) 
+        updateBorderAndMargin(parent, side, border, "0");
 }
 
 function onMouseOut() {
     const btn_name = this.getAttribute("name");
-    const parent = this.parentElement.style;
-    const hover_color = "black";
+    const parent = this.parentElement;   
+    const side = getSide(btn_name);
 
-    switch (btn_name) {
-        case "btn-top":
-            if (parent.borderTopColor == hover_color) {
-                parent.borderTop = "none";
-                parent.marginTop = "5px";
-            }
-            break;
-        case "btn-bottom":
-            if (parent.borderBottomColor == hover_color) {
-                parent.borderBottom = "none";
-                parent.marginBottom = "5px";
-            }
-            break;
-        case "btn-left":
-            if (parent.borderLeftColor == hover_color) {
-                parent.borderLeft = "none";
-                parent.marginLeft = "5px";
-            }
-            break;
-        case "btn-right":
-            if (parent.borderRightColor == hover_color) {
-                parent.borderRight = "none";
-                parent.marginRight = "5px";
-            }
-            break;
+    let update = false;
+    if (side == "top" && parent.style.borderTopColor == "black"){
+        update = true;
+    } else if (side == "bottom" && parent.style.borderBottomColor == "black"){
+        update = true;
+    } else if (side == "left" && parent.style.borderLeftColor == "black"){
+        update = true;
+    } else if (side == "right" && parent.style.borderRightColor == "black"){
+        update = true;
     }
+
+    if (update){
+        updateBorderAndMargin(parent, side, "none", "5px");
+        console.log("test");
+    }
+
 }
 
 function main() {
