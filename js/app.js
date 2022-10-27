@@ -325,10 +325,8 @@ function onMouseOut() {
         update = true;
     }
 
-    if (update){
+    if (update)
         updateBorderAndMargin(parent, side, "none", "5px");
-        console.log("test");
-    }
 
 }
 
