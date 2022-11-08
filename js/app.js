@@ -1,12 +1,14 @@
-const player_colors = ["blue", "red", "lime"];
-const players = 2;
-const gameboard_size = 3;
+const PLAYER_COLORS = ["blue", "red", "lime"];
+const PLAYERS = 2;
+const GAMEBOARD_SIZE = 3;
+const MAX_MOVES = 24;
 
 let player_scores = [0, 0, 0];
 let turn = 0;
-let turn_color = player_colors[turn];
-let gameboard_ids = new Array(gameboard_size);
+let turn_color = PLAYER_COLORS[turn];
+let gameboard_ids = new Array(GAMEBOARD_SIZE);
 let gameboard_data = {};
+let moves_left = 0;
 
 class EdgeData {
     constructor() {
@@ -20,6 +22,7 @@ class EdgeData {
 
 class SquareData {
     constructor() {
+        this.completed = false;
         this.top = new EdgeData();
         this.bottom = new EdgeData();
         this.right = new EdgeData();
@@ -75,15 +78,15 @@ class SquareData {
 
 function createGameBoardLogic() {
     let id = 0;
-    for (let i = 0; i < gameboard_size; i++) {
-        for (let j = 0; j < gameboard_size; j++) {
+    for (let i = 0; i < GAMEBOARD_SIZE; i++) {
+        for (let j = 0; j < GAMEBOARD_SIZE; j++) {
             gameboard_data[id] = new SquareData();
             gameboard_ids[i][j] = id;
             if (j == 0) {
                 // left
                 if (i == 0) {
                     // pass
-                } else if (i == gameboard_size - 1) {
+                } else if (i == GAMEBOARD_SIZE - 1) {
                     // bottom
                     // connect top UNTESTED
                     const square_top_edge = gameboard_data[gameboard_ids[i - 1][j]].bottom;
@@ -94,12 +97,12 @@ function createGameBoardLogic() {
                     const square_top_edge = gameboard_data[gameboard_ids[i - 1][j]].bottom;
                     gameboard_data[id].connectTop(square_top_edge);
                 }
-            } else if (j == gameboard_size - 1) {
+            } else if (j == GAMEBOARD_SIZE - 1) {
                 // right
                 if (i == 0) {
                     const square_right_edge = gameboard_data[gameboard_ids[i][j - 1]].right;
                     gameboard_data[id].connectLeft(square_right_edge);
-                } else if (i == gameboard_size - 1) {
+                } else if (i == GAMEBOARD_SIZE - 1) {
                     // bottom
                     // connect top
                     const square_top_edge = gameboard_data[gameboard_ids[i - 1][j]].bottom;
@@ -121,7 +124,7 @@ function createGameBoardLogic() {
                 if (i == 0) {
                     const square_right_edge = gameboard_data[gameboard_ids[i][j - 1]].right;
                     gameboard_data[id].connectLeft(square_right_edge);
-                } else if (i == gameboard_size - 1) {
+                } else if (i == GAMEBOARD_SIZE - 1) {
                     // bottom
                     const square_top_edge = gameboard_data[gameboard_ids[i - 1][j]].bottom;
                     gameboard_data[id].connectTop(square_top_edge); //connect top
@@ -148,26 +151,29 @@ function createGameBoardLogic() {
 }
 
 function getCoordinates(id) {
-    for (let i = 0; i < gameboard_size; i++) {
-        for (let j = 0; j < gameboard_size; j++) {
+    for (let i = 0; i < GAMEBOARD_SIZE; i++) {
+        for (let j = 0; j < GAMEBOARD_SIZE; j++) {
             if (gameboard_ids[i][j] == id) return { i_index: i, j_index: j };
         }
     }
 }
 
+function changeTurns() {}
+
 function updateScore() {
     const numbers = ["One", "Two", "Three"];
-    for (let i = 1; i <= players; i++) {
+    for (let i = 1; i <= PLAYERS; i++) {
         const score_el = document.getElementById(`p${i}_score`);
         score_el.textContent = `Player ${numbers[i - 1]}: ${player_scores[i - 1]}`;
-        score_el.style.color = player_colors[i - 1];
+        score_el.style.color = PLAYER_COLORS[i - 1];
     }
 }
 
 function checkAndPoint(target_id) {
     const square = gameboard_data[target_id];
-    if (square.checkStatus()) {
+    if (square.completed == false && square.checkStatus()) {
         console.log("score updated!");
+        square.completed = true;
         player_scores[turn] += 1;
         updateScore();
         return true;
@@ -192,7 +198,7 @@ function checkPoint(edge, id) {
         if (j_index == 0) {
             checks.push(current);
             checks.push(right);
-        } else if (j_index == gameboard_size - 1) {
+        } else if (j_index == GAMEBOARD_SIZE - 1) {
             checks.push(current);
         } else {
             // mid
@@ -202,7 +208,7 @@ function checkPoint(edge, id) {
     } else if (edge == "left") {
         if (j_index == 0) {
             checks.push(current);
-        } else if (j_index == gameboard_size - 1) {
+        } else if (j_index == GAMEBOARD_SIZE - 1) {
             checks.push(current);
             checks.push(left);
         } else {
@@ -214,7 +220,7 @@ function checkPoint(edge, id) {
         if (i_index == 0) {
             checks.push(current);
             checks.push(bottom);
-        } else if (i_index == gameboard_size - 1) {
+        } else if (i_index == GAMEBOARD_SIZE - 1) {
             checks.push(current);
         } else {
             // mid
@@ -224,7 +230,7 @@ function checkPoint(edge, id) {
     } else if (edge == "top") {
         if (i_index == 0) {
             checks.push(current);
-        } else if (i_index == gameboard_size - 1) {
+        } else if (i_index == GAMEBOARD_SIZE - 1) {
             checks.push(top);
             checks.push(current);
         } else {
@@ -245,8 +251,19 @@ function checkPoint(edge, id) {
     if (!gained_point) {
         console.log("current turn: " + turn_color);
         turn += 1;
-        if (turn >= players) turn = 0;
-        turn_color = player_colors[turn];
+        if (turn >= PLAYERS) turn = 0;
+        turn_color = PLAYER_COLORS[turn];
+        if (turn == 0) {
+            document.getElementById("p1_score").style.border = "solid 1px";
+            document.getElementById("p1_score").style.boxShadow = "0px 5px 3px 1px";
+            document.getElementById("p2_score").style.border = "none";
+            document.getElementById("p2_score").style.boxShadow = "none";
+        } else if (turn == 1) {
+            document.getElementById("p1_score").style.border = "none";
+            document.getElementById("p1_score").style.boxShadow = "none";
+            document.getElementById("p2_score").style.border = "solid 1px";
+            document.getElementById("p2_score").style.boxShadow = "0px 5px 3px 1px";
+        }
         console.log("updated turn: " + turn_color);
     }
 }
@@ -285,6 +302,19 @@ function updateBorderAndMargin(element, side, border_style, margin_style) {
     }
 }
 
+function gameOver() {
+    // https://stackoverflow.com/questions/979975/get-the-values-from-the-get-parameters-javascript
+    let url = `/gameover.html?winner=p1`
+    let searchParams = new URLSearchParams(url);
+    console.log(searchParams.get('winner'));  
+    window.open(url, '_blank').focus();
+}
+
+function checkValidMove(square_id, side) {
+    if (gameboard_data[square_id].isPopulated(side) == false) return true;
+    return false;
+}
+
 function addEdge() {
     let border_style = `solid 5px ${turn_color}`;
 
@@ -293,9 +323,14 @@ function addEdge() {
     const square_id = parent.getAttribute("id");
     const side = getSide(btn_name);
 
-    updateBorderAndMargin(parent, side, border_style, "0");
-    gameboard_data[square_id].setPopulated(side);
-    checkPoint(side, square_id);
+    if (checkValidMove(square_id, side)) {
+        updateBorderAndMargin(parent, side, border_style, "0");
+        gameboard_data[square_id].setPopulated(side);
+        checkPoint(side, square_id);
+        moves_left -= 1;
+        /* if (moves_left == 0)  */
+        gameOver();
+    }
 }
 
 function onHover() {
@@ -305,34 +340,31 @@ function onHover() {
     const border = "dashed 5px black";
     const side = getSide(btn_name);
 
-    if (!gameboard_data[id].isPopulated(side)) 
-        updateBorderAndMargin(parent, side, border, "0");
+    if (!gameboard_data[id].isPopulated(side)) updateBorderAndMargin(parent, side, border, "0");
 }
 
 function onMouseOut() {
     const btn_name = this.getAttribute("name");
-    const parent = this.parentElement;   
+    const parent = this.parentElement;
     const side = getSide(btn_name);
 
     let update = false;
-    if (side == "top" && parent.style.borderTopColor == "black"){
+    if (side == "top" && parent.style.borderTopColor == "black") {
         update = true;
-    } else if (side == "bottom" && parent.style.borderBottomColor == "black"){
+    } else if (side == "bottom" && parent.style.borderBottomColor == "black") {
         update = true;
-    } else if (side == "left" && parent.style.borderLeftColor == "black"){
+    } else if (side == "left" && parent.style.borderLeftColor == "black") {
         update = true;
-    } else if (side == "right" && parent.style.borderRightColor == "black"){
+    } else if (side == "right" && parent.style.borderRightColor == "black") {
         update = true;
     }
 
-    if (update)
-        updateBorderAndMargin(parent, side, "none", "5px");
-
+    if (update) updateBorderAndMargin(parent, side, "none", "5px");
 }
 
 function resetStyles() {
     const squares = document.getElementsByClassName("square");
-    for (let square of squares){
+    for (let square of squares) {
         square.style.border = "none";
         square.style.margin = "5px";
     }
@@ -343,15 +375,16 @@ function reset() {
     setup();
 }
 
-function setup(){
+function setup() {
     player_scores = [0, 0, 0];
     turn = 0;
-    turn_color = player_colors[turn];
-    gameboard_ids = new Array(gameboard_size);
+    turn_color = PLAYER_COLORS[turn];
+    gameboard_ids = new Array(GAMEBOARD_SIZE);
     gameboard_data = {};
+    moves_left = MAX_MOVES;
 
     for (var i = 0; i < gameboard_ids.length; i++) {
-        gameboard_ids[i] = new Array(gameboard_size);
+        gameboard_ids[i] = new Array(GAMEBOARD_SIZE);
     }
 
     createGameBoardLogic();
@@ -359,10 +392,9 @@ function setup(){
 }
 
 function start() {
+    setup();
 
-    setup()
-
-    for (let i = 0; i < gameboard_size * gameboard_size; i++) {
+    for (let i = 0; i < GAMEBOARD_SIZE * GAMEBOARD_SIZE; i++) {
         // Add event listener to table
         const square = document.getElementById(i).children;
         for (child of square) {
@@ -375,9 +407,7 @@ function start() {
     }
 
     const reset_btn = document.getElementById("reset");
-    reset_btn.addEventListener("click", reset, false)
+    reset_btn.addEventListener("click", reset, false);
 }
-
-
 
 start();

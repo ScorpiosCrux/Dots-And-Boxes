@@ -9,6 +9,7 @@ body {
     height: 5vh;
     justify-content: center;
     align-items: center;
+    border-bottom: solid 1px black;
 }
 
 .navbar ul {
@@ -28,6 +29,7 @@ body {
     font-size: large;
     text-decoration: none;
     text-transform: capitalize;
+    color: black;
 }
 
 main {
@@ -36,7 +38,7 @@ main {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: start;
+    justify-content: center;
 }
 
 .title {
@@ -45,7 +47,7 @@ main {
 
 .score-board {
     width: 750px;
-    padding-bottom: 50px;
+    padding-bottom: 30px;
     
     display: flex;
     flex-direction: column;
@@ -59,24 +61,30 @@ main {
     font-size: xx-large;
     display: block;
 
+    padding-bottom: 10px;
+
 }
 
 .scores {
     width: 100%;
-    
 
     display: flex;
     flex-direction: row;
+    justify-content: space-evenly;
 
 }
 
 .score {
+    /* box-shadow: 5px 10px 30px; */
+    
     padding-top: 10px;
     padding-bottom: 10px;
-
-
-    flex-grow: 1;
+    text-align: center;
+    
     font-size: x-large;
+    border: solid 1px;
+    box-shadow: 0px 5px 3px 1px;
+    
 }
 
 .controls {

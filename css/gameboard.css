@@ -46,32 +46,32 @@
     border-radius: 50%;
     background: black;
 
-    width: 50px;
-    height: 50px;
+    width: 30px;
+    height: 30px;
 }
 
 .circle-top-left {
-    /* 50% of width and height*/
-    top: -25px;
-    left: -25px;
+    /* 50% of width and height + margin size */
+    top: -20px;
+    left: -20px;
 }
 
 .circle-top-right {
-    /* 50% of width and height*/
-    top: -25px;
-    right: -25px;
+    /* 50% of width and height + margin size */
+    top: -20px;
+    right: -20px;
 }
 
 .circle-bottom-left {
-    /* 50% of width and height*/
-    bottom: -25px;
-    left: -25px;
+    /* 50% of width and height + margin size */
+    bottom: -20px;
+    left: -20px;
 }
 
 .circle-bottom-right {
-    /* 50% of width and height*/
-    bottom: -25px;
-    right: -25px;
+    /* 50% of width and height + margin size */
+    bottom: -20px;
+    right: -20px;
 }
 
 .button-edge{
