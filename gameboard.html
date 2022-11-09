@@ -17,14 +17,12 @@
         </nav>
 
         <main>
-            <div class="title"> Dots And Boxes!</div>
+            <div class="title">Dots And Boxes!</div>
             <div class="controls">
                 <button name="reset" id="reset">Reset</button>
             </div>
             <div class="score-board">
-                <div class="score-title">
-                    Scores:
-                </div>
+                <div class="score-title">Scores:</div>
                 <div class="scores">
                     <div class="score" id="p1_score">Player 1: Val</div>
                     <div class="score" id="p2_score">Player 2: Val</div>
@@ -49,7 +47,6 @@
                             <button class="button-edge button-tb-edge button-edge-top" name="btn-top"></button>
                             <button class="button-edge button-tb-edge button-edge-bottom" name="btn-bottom"></button>
                             <button class="button-edge button-lr-edge button-edge-right" name="btn-right"></button>
-                            
                         </div>
                         <div class="square" id="2">
                             <div class="circle circle-top-right"></div>
@@ -98,6 +95,13 @@
                             <button class="button-edge button-lr-edge button-edge-right" name="btn-right"></button>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <div id="gameover" class="modal">
+                <div class="modal-content">
+                    <span id="close" class="close">&times;</span>
+                    <p id="winner">Some text in the Modal..</p>
                 </div>
             </div>
         </main>

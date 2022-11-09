@@ -158,8 +158,6 @@ function getCoordinates(id) {
     }
 }
 
-function changeTurns() {}
-
 function updateScore() {
     const numbers = ["One", "Two", "Three"];
     for (let i = 1; i <= PLAYERS; i++) {
@@ -303,11 +301,19 @@ function updateBorderAndMargin(element, side, border_style, margin_style) {
 }
 
 function gameOver() {
-    // https://stackoverflow.com/questions/979975/get-the-values-from-the-get-parameters-javascript
-    let url = `/gameover.html?winner=p1`
-    let searchParams = new URLSearchParams(url);
-    console.log(searchParams.get('winner'));  
-    window.open(url, '_blank').focus();
+    let winner = 0;
+
+    // get max
+    for (let i = 0; i < player_scores.length; i++) {
+        if (player_scores[i] > player_scores[winner]) winner = i;
+    }
+
+    const winner_p = document.getElementById("winner");
+    if (player_scores[winner] == 3) winner_p.textContent = "It's a tie!";
+    else winner_p.textContent = `Player ${winner + 1} Wins!!`;
+
+    // display popup
+    document.getElementById("gameover").style.display = "block";
 }
 
 function checkValidMove(square_id, side) {
@@ -328,8 +334,7 @@ function addEdge() {
         gameboard_data[square_id].setPopulated(side);
         checkPoint(side, square_id);
         moves_left -= 1;
-        /* if (moves_left == 0)  */
-        gameOver();
+        if (moves_left == 0) gameOver();
     }
 }
 
@@ -406,8 +411,10 @@ function start() {
         }
     }
 
-    const reset_btn = document.getElementById("reset");
-    reset_btn.addEventListener("click", reset, false);
+    document.getElementById("reset").addEventListener("click", reset, false);
+    document.getElementById("close").addEventListener("click", function () {
+        document.getElementById("gameover").style.display = "none";
+    });
 }
 
 start();
