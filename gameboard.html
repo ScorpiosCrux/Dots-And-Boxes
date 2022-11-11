@@ -9,23 +9,19 @@
         <title>Gameboard</title>
     </head>
     <body>
-        <nav class="navbar">
-            <ul>
-                <li><a href="index.html">HOME</a></li>
-                <li><a href="gameboard.html">PLAY</a></li>
-            </ul>
-        </nav>
 
         <main>
             <div class="title">Dots And Boxes!</div>
             <div class="controls">
-                <button name="reset" id="reset">Reset</button>
+                <button class="styled-btn"><a href="index.html">Home</a></button>
+                <button class="styled-btn" name="reset" id="reset">Restart</button>
             </div>
             <div class="score-board">
                 <div class="score-title">Scores:</div>
                 <div class="scores">
-                    <div class="score" id="p1_score">Player 1: Val</div>
-                    <div class="score" id="p2_score">Player 2: Val</div>
+                    <div class="score" id="p0_score">Player 1: 0</div>
+                    <div class="score" id="p1_score">Player 2: 0</div>
+                    <div class="score" id="p2_score">Player 3: 0</div>
                 </div>
             </div>
             <div>
@@ -40,6 +36,7 @@
                             <button class="button-edge button-tb-edge button-edge-bottom" name="btn-bottom"></button>
                             <button class="button-edge button-lr-edge button-edge-left" name="btn-left"></button>
                             <button class="button-edge button-lr-edge button-edge-right" name="btn-right"></button>
+                            <div class="square-point" id="0-point"></div>
                         </div>
                         <div class="square" id="1">
                             <div class="circle circle-top-right"></div>
@@ -47,6 +44,8 @@
                             <button class="button-edge button-tb-edge button-edge-top" name="btn-top"></button>
                             <button class="button-edge button-tb-edge button-edge-bottom" name="btn-bottom"></button>
                             <button class="button-edge button-lr-edge button-edge-right" name="btn-right"></button>
+                            <div class="square-point" id="1-point"></div>
+
                         </div>
                         <div class="square" id="2">
                             <div class="circle circle-top-right"></div>
@@ -54,6 +53,7 @@
                             <button class="button-edge button-tb-edge button-edge-top" name="btn-top"></button>
                             <button class="button-edge button-tb-edge button-edge-bottom" name="btn-bottom"></button>
                             <button class="button-edge button-lr-edge button-edge-right" name="btn-right"></button>
+                            <div class="square-point" id="2-point"></div>
                         </div>
                     </div>
 
@@ -64,16 +64,19 @@
                             <button class="button-edge button-tb-edge button-edge-bottom" name="btn-bottom"></button>
                             <button class="button-edge button-lr-edge button-edge-left" name="btn-left"></button>
                             <button class="button-edge button-lr-edge button-edge-right" name="btn-right"></button>
+                            <div class="square-point" id="3-point"></div>
                         </div>
                         <div class="square" id="4">
                             <div class="circle circle-bottom-right"></div>
                             <button class="button-edge button-tb-edge button-edge-bottom" name="btn-bottom"></button>
                             <button class="button-edge button-lr-edge button-edge-right" name="btn-right"></button>
+                            <div class="square-point" id="4-point"></div>
                         </div>
                         <div class="square" id="5">
                             <div class="circle circle-bottom-right"></div>
                             <button class="button-edge button-tb-edge button-edge-bottom" name="btn-bottom"></button>
                             <button class="button-edge button-lr-edge button-edge-right" name="btn-right"></button>
+                            <div class="square-point" id="5-point"></div>
                         </div>
                     </div>
                     <div class="row">
@@ -83,16 +86,19 @@
                             <button class="button-edge button-tb-edge button-edge-bottom" name="btn-bottom"></button>
                             <button class="button-edge button-lr-edge button-edge-left" name="btn-left"></button>
                             <button class="button-edge button-lr-edge button-edge-right" name="btn-right"></button>
+                            <div class="square-point" id="6-point"></div>
                         </div>
                         <div class="square" id="7">
                             <div class="circle circle-bottom-right"></div>
                             <button class="button-edge button-tb-edge button-edge-bottom" name="btn-bottom"></button>
                             <button class="button-edge button-lr-edge button-edge-right" name="btn-right"></button>
+                            <div class="square-point" id="7-point"></div>
                         </div>
                         <div class="square" id="8">
                             <div class="circle circle-bottom-right"></div>
                             <button class="button-edge button-tb-edge button-edge-bottom" name="btn-bottom"></button>
                             <button class="button-edge button-lr-edge button-edge-right" name="btn-right"></button>
+                            <div class="square-point" id="8-point"></div>
                         </div>
                     </div>
                 </div>

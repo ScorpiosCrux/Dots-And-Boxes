@@ -1,5 +1,6 @@
 const PLAYER_COLORS = ["blue", "red", "lime"];
-const PLAYERS = 2;
+const NUMBERS = ["One", "Two", "Three"];
+const PLAYERS = 3;
 const GAMEBOARD_SIZE = 3;
 const MAX_MOVES = 24;
 
@@ -146,8 +147,6 @@ function createGameBoardLogic() {
             id += 1;
         }
     }
-
-    console.log("Done");
 }
 
 function getCoordinates(id) {
@@ -159,18 +158,16 @@ function getCoordinates(id) {
 }
 
 function updateScore() {
-    const numbers = ["One", "Two", "Three"];
-    for (let i = 1; i <= PLAYERS; i++) {
+    for (let i = 0; i < PLAYERS; i++) {
         const score_el = document.getElementById(`p${i}_score`);
-        score_el.textContent = `Player ${numbers[i - 1]}: ${player_scores[i - 1]}`;
-        score_el.style.color = PLAYER_COLORS[i - 1];
+        score_el.textContent = `Player ${NUMBERS[i]}: ${player_scores[i]}`;
+        score_el.style.color = PLAYER_COLORS[i];
     }
 }
 
 function checkAndPoint(target_id) {
     const square = gameboard_data[target_id];
     if (square.completed == false && square.checkStatus()) {
-        console.log("score updated!");
         square.completed = true;
         player_scores[turn] += 1;
         updateScore();
@@ -243,27 +240,35 @@ function checkPoint(edge, id) {
     for (let check of checks) {
         let target_id = gameboard_ids[check.i][check.j];
         let boxed = checkAndPoint(target_id);
-        if (boxed) gained_point = true;
+        if (boxed) {
+            gained_point = true;
+            document.getElementById(`${target_id}-point`).style.backgroundColor = turn_color;
+        }
     }
 
+    // If the box was not completed, update colour
     if (!gained_point) {
-        console.log("current turn: " + turn_color);
-        turn += 1;
-        if (turn >= PLAYERS) turn = 0;
-        turn_color = PLAYER_COLORS[turn];
-        if (turn == 0) {
-            document.getElementById("p1_score").style.border = "solid 1px";
-            document.getElementById("p1_score").style.boxShadow = "0px 5px 3px 1px";
-            document.getElementById("p2_score").style.border = "none";
-            document.getElementById("p2_score").style.boxShadow = "none";
-        } else if (turn == 1) {
-            document.getElementById("p1_score").style.border = "none";
-            document.getElementById("p1_score").style.boxShadow = "none";
-            document.getElementById("p2_score").style.border = "solid 1px";
-            document.getElementById("p2_score").style.boxShadow = "0px 5px 3px 1px";
-        }
-        console.log("updated turn: " + turn_color);
+        updateTurn();
     }
+}
+
+function updateTurn() {
+    const border_style = "solid 1px";
+    const boxShadow_style = "0px 5px 3px 1px";
+
+    // set style to none
+    document.getElementById(`p${turn}_score`).style.border = "none";
+    document.getElementById(`p${turn}_score`).style.boxShadow = "none";
+
+    // update turn
+    turn += 1;
+    if (turn >= PLAYERS) turn = 0;
+    turn_color = PLAYER_COLORS[turn];
+
+    // update element with new style
+    document.getElementById(`p${turn}_score`).style.border = border_style;
+    document.getElementById(`p${turn}_score`).style.boxShadow = boxShadow_style;
+
 }
 
 function getSide(btn_name) {
@@ -301,18 +306,26 @@ function updateBorderAndMargin(element, side, border_style, margin_style) {
 }
 
 function gameOver() {
-    let winner = 0;
+    let winners = [];
+    let max_score = 0;
 
     // get max
     for (let i = 0; i < player_scores.length; i++) {
-        if (player_scores[i] > player_scores[winner]) winner = i;
+        if (player_scores[i] > max_score) {
+            max_score = player_scores[i];
+            winners = [];
+            winners.push(i);
+        } else if (player_scores[i] == max_score) winners.push(i);
     }
 
     const winner_p = document.getElementById("winner");
-    if (player_scores[winner] == 3) winner_p.textContent = "It's a tie!";
-    else winner_p.textContent = `Player ${winner + 1} Wins!!`;
 
-    // display popup
+    if (winners.length == 2) 
+        winner_p.textContent = `It's a tie between Player ${NUMBERS[winners[0]]} and Player ${NUMBERS[winners[1]]}`;
+    else if (winners.length == 3)
+        winner_p.textContent = "It's a tie between all 3 players!";
+    else winner_p.textContent = `Player ${winners[0] + 1} Wins!!`;
+
     document.getElementById("gameover").style.display = "block";
 }
 
@@ -342,7 +355,7 @@ function onHover() {
     const btn_name = this.getAttribute("name");
     const parent = this.parentElement;
     const id = parent.getAttribute("id");
-    const border = "dashed 5px black";
+    const border = `dashed 5px ${turn_color}`;
     const side = getSide(btn_name);
 
     if (!gameboard_data[id].isPopulated(side)) updateBorderAndMargin(parent, side, border, "0");
@@ -354,13 +367,13 @@ function onMouseOut() {
     const side = getSide(btn_name);
 
     let update = false;
-    if (side == "top" && parent.style.borderTopColor == "black") {
+    if (side == "top" && parent.style.borderTopStyle == "dashed") {
         update = true;
-    } else if (side == "bottom" && parent.style.borderBottomColor == "black") {
+    } else if (side == "bottom" && parent.style.borderBottomStyle == "dashed") {
         update = true;
-    } else if (side == "left" && parent.style.borderLeftColor == "black") {
+    } else if (side == "left" && parent.style.borderLeftStyle == "dashed") {
         update = true;
-    } else if (side == "right" && parent.style.borderRightColor == "black") {
+    } else if (side == "right" && parent.style.borderRightStyle == "dashed") {
         update = true;
     }
 
@@ -368,16 +381,31 @@ function onMouseOut() {
 }
 
 function resetStyles() {
+    const border_style = "solid 1px";
+    const boxShadow_style = "0px 5px 3px 1px";
+
+    for (let i = 0; i < PLAYERS; i++){
+        document.getElementById(`p${i}_score`).style.border = "none";
+        document.getElementById(`p${i}_score`).style.boxShadow = "none";
+    }
+
+    document.getElementById(`p${turn}_score`).style.border = border_style;
+    document.getElementById(`p${turn}_score`).style.boxShadow = boxShadow_style;
+
     const squares = document.getElementsByClassName("square");
     for (let square of squares) {
         square.style.border = "none";
         square.style.margin = "5px";
     }
+
+    for (let i = 0; i < GAMEBOARD_SIZE*GAMEBOARD_SIZE; i++) {
+        document.getElementById(`${i}-point`).style.backgroundColor = "transparent";
+    }
 }
 
 function reset() {
-    resetStyles();
     setup();
+    resetStyles();
 }
 
 function setup() {
@@ -398,6 +426,7 @@ function setup() {
 
 function start() {
     setup();
+    resetStyles()
 
     for (let i = 0; i < GAMEBOARD_SIZE * GAMEBOARD_SIZE; i++) {
         // Add event listener to table
