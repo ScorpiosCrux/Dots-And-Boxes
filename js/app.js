@@ -1,3 +1,9 @@
+/* 
+    Created by: Tyler Chen
+    Dots and Boxes
+ */
+
+
 const PLAYER_COLORS = ["blue", "red", "lime"];
 const NUMBERS = ["One", "Two", "Three"];
 const PLAYERS = 3;
@@ -11,6 +17,7 @@ let gameboard_ids = new Array(GAMEBOARD_SIZE);
 let gameboard_data = {};
 let moves_left = 0;
 
+/* class for containing edge data */
 class EdgeData {
     constructor() {
         this.populated = false;
@@ -21,6 +28,11 @@ class EdgeData {
     }
 }
 
+/* 
+    - class for containing square data
+    - We populate edges by reference.
+        - When one edge changes in one square, it will also change the edge in another.
+ */
 class SquareData {
     constructor() {
         this.completed = false;
@@ -77,6 +89,7 @@ class SquareData {
     }
 }
 
+/* Create the gameboard and connect the edges by reference. */
 function createGameBoardLogic() {
     let id = 0;
     for (let i = 0; i < GAMEBOARD_SIZE; i++) {
@@ -149,6 +162,7 @@ function createGameBoardLogic() {
     }
 }
 
+/* Gets the i,j coordinates for the 2d array gameboard_ids */
 function getCoordinates(id) {
     for (let i = 0; i < GAMEBOARD_SIZE; i++) {
         for (let j = 0; j < GAMEBOARD_SIZE; j++) {
@@ -157,6 +171,7 @@ function getCoordinates(id) {
     }
 }
 
+/* Updates the score using the player_scores data structure. */
 function updateScore() {
     for (let i = 0; i < PLAYERS; i++) {
         const score_el = document.getElementById(`p${i}_score`);
@@ -165,6 +180,7 @@ function updateScore() {
     }
 }
 
+/* Check the status of the square and update score if necessary */
 function checkAndPoint(target_id) {
     const square = gameboard_data[target_id];
     if (square.completed == false && square.checkStatus()) {
@@ -176,6 +192,10 @@ function checkAndPoint(target_id) {
     return false;
 }
 
+/* 
+    - This function checks which edges we need to check. 
+    - E.g. If we populate the "right" edge, then it will check the boxes left and right of the edge.
+*/
 function checkPoint(edge, id) {
     const { i_index, j_index } = getCoordinates(id);
 
@@ -252,6 +272,7 @@ function checkPoint(edge, id) {
     }
 }
 
+/* Updates the styles and turn of the player */
 function updateTurn() {
     const border_style = "solid 1px";
     const boxShadow_style = "0px 5px 3px 1px";
@@ -268,9 +289,9 @@ function updateTurn() {
     // update element with new style
     document.getElementById(`p${turn}_score`).style.border = border_style;
     document.getElementById(`p${turn}_score`).style.boxShadow = boxShadow_style;
-
 }
 
+/* Returns which side is called. */
 function getSide(btn_name) {
     switch (btn_name) {
         case "btn-top":
@@ -284,6 +305,7 @@ function getSide(btn_name) {
     }
 }
 
+/* Updates the border and margin of an element by param */
 function updateBorderAndMargin(element, side, border_style, margin_style) {
     switch (side) {
         case "top":
@@ -305,6 +327,10 @@ function updateBorderAndMargin(element, side, border_style, margin_style) {
     }
 }
 
+/* 
+    - When the game is over and there are no moves left.
+    - Gets the winners and updates the modal.
+ */
 function gameOver() {
     let winners = [];
     let max_score = 0;
@@ -320,20 +346,23 @@ function gameOver() {
 
     const winner_p = document.getElementById("winner");
 
-    if (winners.length == 2) 
+    if (winners.length == 2)
         winner_p.textContent = `It's a tie between Player ${NUMBERS[winners[0]]} and Player ${NUMBERS[winners[1]]}`;
-    else if (winners.length == 3)
-        winner_p.textContent = "It's a tie between all 3 players!";
+    else if (winners.length == 3) winner_p.textContent = "It's a tie between all 3 players!";
     else winner_p.textContent = `Player ${winners[0] + 1} Wins!!`;
 
     document.getElementById("gameover").style.display = "block";
 }
 
+/* 
+    Checks to see if the move is valid, aka. if the side is already populated or not.
+*/
 function checkValidMove(square_id, side) {
     if (gameboard_data[square_id].isPopulated(side) == false) return true;
     return false;
 }
 
+/* Runs the logic for adding an edge. */
 function addEdge() {
     let border_style = `solid 5px ${turn_color}`;
 
@@ -351,6 +380,7 @@ function addEdge() {
     }
 }
 
+/* Runs the logic when you hover a button */
 function onHover() {
     const btn_name = this.getAttribute("name");
     const parent = this.parentElement;
@@ -361,6 +391,7 @@ function onHover() {
     if (!gameboard_data[id].isPopulated(side)) updateBorderAndMargin(parent, side, border, "0");
 }
 
+/* Runs the logic when you STOP hover a button */
 function onMouseOut() {
     const btn_name = this.getAttribute("name");
     const parent = this.parentElement;
@@ -380,11 +411,12 @@ function onMouseOut() {
     if (update) updateBorderAndMargin(parent, side, "none", "5px");
 }
 
+/* Used to reset the styles when the game is restarted */
 function resetStyles() {
     const border_style = "solid 1px";
     const boxShadow_style = "0px 5px 3px 1px";
 
-    for (let i = 0; i < PLAYERS; i++){
+    for (let i = 0; i < PLAYERS; i++) {
         document.getElementById(`p${i}_score`).style.border = "none";
         document.getElementById(`p${i}_score`).style.boxShadow = "none";
     }
@@ -398,16 +430,18 @@ function resetStyles() {
         square.style.margin = "5px";
     }
 
-    for (let i = 0; i < GAMEBOARD_SIZE*GAMEBOARD_SIZE; i++) {
+    for (let i = 0; i < GAMEBOARD_SIZE * GAMEBOARD_SIZE; i++) {
         document.getElementById(`${i}-point`).style.backgroundColor = "transparent";
     }
 }
 
+/* Called when the game is reset */
 function reset() {
     setup();
     resetStyles();
 }
 
+/* Setups/Resets the variables */
 function setup() {
     player_scores = [0, 0, 0];
     turn = 0;
@@ -424,9 +458,10 @@ function setup() {
     updateScore();
 }
 
+/* Ran on start. Setups variables and styles and then also adds listeners. */
 function start() {
     setup();
-    resetStyles()
+    resetStyles();
 
     for (let i = 0; i < GAMEBOARD_SIZE * GAMEBOARD_SIZE; i++) {
         // Add event listener to table
