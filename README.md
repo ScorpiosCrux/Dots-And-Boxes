@@ -8,4 +8,10 @@
 - Tested on Safari, Chrome, Firefox
 
 ## Notes
-- 
+- Zooming in (or out) too much into the game can cause issues. On testing everything on the gameboard fits onto 90% of the screen.
+- This is a 3x3 square, but in the announcements, he said a 4x4 (dots) works.
+
+## Main References:
+- MDN
+- W3Schools
+- StackOverflow
